@@ -1,9 +1,13 @@
-// utils/osrmUtils.js
+import MapNode from '../types/MapNodeType';
 
 // Function to get the shortest route using OSRM
-async function getShortestCarRoute(start, end) {
-    const osrmUrl = `http://router.project-osrm.org/route/v1/driving/${start[0]},${start[1]};${end[0]},${end[1]}?overview=full&geometries=geojson`;
-
+async function getShortestCarRoute(start: MapNode, end: MapNode) {
+    const lon1 = start.Location[1];
+    const lat1 = start.Location[0];
+    const lon2 = end.Location[1];
+    const lat2 = end.Location[0];
+    const osrmUrl = `http://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson`;
+ 
     try {
         const response = await fetch(osrmUrl);
         const data = await response.json();
@@ -24,4 +28,4 @@ async function getShortestCarRoute(start, end) {
     }
 }
 
-module.exports = { getShortestCarRoute };
+export default getShortestCarRoute;

@@ -1,4 +1,4 @@
-/* we assume 26-ft Box Truck Size
+/* Assume 26-ft Box Truck Size
 Cargo Capacity- 1,800 cubic feet
 Payload Capabilities- Up to 10,000 pounds ~ 4.5 tons
 https://www.internationalusedtrucks.com/box-truck-sizes/
@@ -15,7 +15,6 @@ No.	Name 	            Year built 	    GT 	LOA (m) 	Speed (knot)
 1	PSA SUSTAINABILITY	1999	    19,131	177	        19.6
 2	PSA CONNECTIVITY	1995	    16,800	172.36	    19.5
 3	PSA AGILITY	        1994	    7,869	119	        17.0
-https://psabdp.com/what-we-do/transportation-services/air-freight
 https://www.psamarine.com/fleet/fleet-list/
 */
 const CARGO_SHIP_GROSS_TONNAGE = 16000;
@@ -29,8 +28,18 @@ Range: 9,200 km (4,970 nautical miles)
 Payload Capacity: Up to 102 metric tons
 Cargo Volume: 25,270 cubic feet
 Popular Routes: Efficient for both long-haul and regional routes (e.g., JFK to AMS, FRA to PVG).
+https://psabdp.com/what-we-do/transportation-services/air-freight
 https://chatgpt.com/share/670a7269-abc4-8008-acb6-3a2f6ecb512f
 */
 
-const CARGO_AIRPLANE_TONNAGE_CAPACITY = 102;
+const CARGO_AIRCRAFT_TONNAGE_CAPACITY = 102;
 
+
+/*
+calculated using the following website
+https://www.carboncare.org/en/co2-emissions-calculator
+*/
+
+const CARGO_TRUCK_CO2_EMISSIONS_KG_PER_KM_PER_TON =  0.21813
+const CARGO_SHIP_CO2_EMISSIONS_KG_PER_KM_PER_TON = 0.0095259
+const CARGO_AIRCRAFT_CO2_EMISSIONS_KG_PER_KM_PER_TON = 0.44908
