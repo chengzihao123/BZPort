@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  height: 100vh; /* Ensure the App container fills the full viewport height */
+  display: flex;
+  flex-direction: column;
 }
 
 .App-header {
@@ -62,6 +65,20 @@ select {
 }
 
 .map-container {
-  margin-top: 30px;
-  padding: 30px;
+  flex-grow: 1;
+  padding: 0;
+  height: calc(100vh - 13vh - 50px);
+  width: 100%;
+}
+
+.controls-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.map {
+  height: 100%;
+  width: 100%;
 }

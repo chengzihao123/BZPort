@@ -27,14 +27,16 @@ function App() {
     return (
         <div className="App">
             <Header />
-            <DropdownSelector
-                source={source}
-                destination={destination}
-                locations={locations}
-                setSource={setSource}
-                setDestination={setDestination}
-            />
-            <RecommendedPathButton onClick={handleRecommendedPath} />
+            <div className="controls-container">
+                <DropdownSelector
+                    source={source}
+                    destination={destination}
+                    locations={locations}
+                    setSource={setSource}
+                    setDestination={setDestination}
+                />
+                <RecommendedPathButton onClick={handleRecommendedPath} />
+            </div>
             <BZPortMap
                 sourceCoords={sourceCoords}
                 destinationCoords={destinationCoords}
@@ -46,5 +48,6 @@ function App() {
 }
 
 export default App;
+
 
 
