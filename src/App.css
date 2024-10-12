@@ -2,37 +2,65 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  height: 15vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  justify-content: space-between;
+  padding: 5px;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.product-name {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.header-image {
+  flex-grow: 1;
+  height: 100%;
+  background-image: url('./port.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.dropdown-container {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.dropdown {
+  margin: 10px;
+}
+
+select {
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.recommend-button {
+  background-color: #61dafb;
+  border: none;
+  padding: 10px 10px;
+  font-size: 1em;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.recommend-button:hover {
+  background-color: #21a1f1;
+}
+
+.map-container {
+  margin-top: 30px;
 }
