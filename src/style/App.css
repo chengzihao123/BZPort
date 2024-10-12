@@ -4,7 +4,7 @@
 
 .App-header {
   background-color: #282c34;
-  height: 15vh;
+  height: 13vh;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -54,6 +54,7 @@ select {
   color: white;
   border-radius: 5px;
   cursor: pointer;
+  margin: 15px;
 }
 
 .recommend-button:hover {
@@ -62,4 +63,5 @@ select {
 
 .map-container {
   margin-top: 30px;
+  padding: 30px;
 }
