@@ -15,6 +15,7 @@ No.	Name 	            Year built 	    GT 	LOA (m) 	Speed (knot)
 1	PSA SUSTAINABILITY	1999	    19,131	177	        19.6
 2	PSA CONNECTIVITY	1995	    16,800	172.36	    19.5
 3	PSA AGILITY	        1994	    7,869	119	        17.0
+https://psabdp.com/what-we-do/transportation-services/air-freight
 https://www.psamarine.com/fleet/fleet-list/
 */
 const CARGO_SHIP_GROSS_TONNAGE = 16000;
