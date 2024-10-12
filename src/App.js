@@ -1,18 +1,18 @@
 import { useState } from 'react';
-import './App.css';
+import './style/App.css';
 import { MapContainer, TileLayer, Marker, Polyline, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import dockIcon from './dock.png';
+import dockIcon from './images/dock.png';
+import Header from './components/Header';
+import Dropdown from './components/Dropdown';
+import RecommendedPathButton from './components/RecommendedPathButton';
 
 function App() {
-    // State to handle dropdown selections
     const [destination, setDestination] = useState('');
     const [source, setSource] = useState('');
-    const [transportMode, setTransportMode] = useState('');
     const [pathVisible, setPathVisible] = useState(false);
 
-    // Coordinates for some cities (example)
     const locations = {
         'New York': [40.7128, -74.0060],
         'London': [51.5074, -0.1278],
@@ -22,71 +22,60 @@ function App() {
         'Sydney': [-33.8688, 151.2093],
     };
 
-    // Handle Recommended Path button click
     const handleRecommendedPath = () => {
-        if (destination && source && transportMode) {
+        if (destination && source) {
             alert(`Recommended path from ${source} to ${destination}`);
-            setPathVisible(true); // Show the map when path is selected
+            setPathVisible(true);
         } else {
             alert('Please select a Destination, Source, and Mode of Transport.');
             setPathVisible(false);
         }
     };
 
-    // Get coordinates for source and destination
     const sourceCoords = locations[source] || [0, 0];
     const destinationCoords = locations[destination] || [0, 0];
 
-    // Custom dock icon for markers
     const dockMarkerIcon = new L.Icon({
         iconUrl: dockIcon,
-        iconSize: [50, 50], // Customize the size of the dock icon
-        iconAnchor: [25, 50], // Adjust to center the icon properly
-        popupAnchor: [0, -50], // Adjust the popup position relative to the icon
+        iconSize: [50, 50],
+        iconAnchor: [25, 50],
+        popupAnchor: [0, -50],
     });
 
     return (
         <div className="App">
-            <header className="App-header">
-                <div className="product-name">BZPort</div>
-                <div className="header-image"></div>
-            </header>
+            <Header />
 
             <div className="dropdown-container">
-                <div className="dropdown">
-                    <label>Destination: </label>
-                    <select value={destination} onChange={(e) => setDestination(e.target.value)}>
-                        <option value="">Select Destination</option>
-                        <option value="New York">New York</option>
-                        <option value="London">London</option>
-                        <option value="Tokyo">Tokyo</option>
-                    </select>
-                </div>
+                <Dropdown
+                    label="Destination"
+                    value={destination}
+                    options={['New York', 'London', 'Tokyo']}
+                    onChange={setDestination}
+                />
+                <Dropdown
+                    label="Source"
+                    value={source}
+                    options={['Paris', 'Berlin', 'Sydney']}
+                    onChange={setSource}
+                />
 
-                <div className="dropdown">
-                    <label>Source: </label>
-                    <select value={source} onChange={(e) => setSource(e.target.value)}>
-                        <option value="">Select Source</option>
-                        <option value="Paris">Paris</option>
-                        <option value="Berlin">Berlin</option>
-                        <option value="Sydney">Sydney</option>
-                    </select>
-                </div>
-
-                <button className="recommend-button" onClick={handleRecommendedPath}>
-                    Recommended Path
-                </button>
-
+                <RecommendedPathButton onClick={handleRecommendedPath} />
             </div>
 
             <p>
-                Selected Destination: {destination || 'None'} <br/>
-                Selected Source: {source || 'None'} <br />
+                Selected Destination: {destination || 'None'} <br />
+                Selected Source: {source || 'None'}
             </p>
 
             {pathVisible && (
                 <div className="map-container">
-                    <MapContainer center={sourceCoords} zoom={2} scrollWheelZoom={false} style={{ height: '500px', width: '100%' }}>
+                    <MapContainer
+                        center={sourceCoords}
+                        zoom={2}
+                        scrollWheelZoom={false}
+                        style={{ height: '500px', width: '100%' }}
+                    >
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
