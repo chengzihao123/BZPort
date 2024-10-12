@@ -18,9 +18,11 @@ import { collection, getDocs } from "firebase/firestore";
 
 function App() {
   const [destination, setDestination] = useState("");
-  const [locations, setLocations] = useState({});
   const [source, setSource] = useState("");
+  const [locations, setLocations] = useState({});
   const [pathVisible, setPathVisible] = useState(false);
+
+  // Fetch locations from Firestore on component mount
   useEffect(() => {
     const fetchData = async () => {
       const itemsCollection = collection(db, "nodes");
@@ -37,17 +39,7 @@ function App() {
     fetchData();
   }, []);
 
-  //   const locations = {
-  //     "New York": [40.7128, -74.006],
-  //     London: [51.5074, -0.1278],
-  //     Tokyo: [35.6762, 139.6503],
-  //     Paris: [48.8566, 2.3522],
-  //     Berlin: [52.52, 13.405],
-  //     Sydney: [-33.8688, 151.2093],
-  //   };
-
   const handleRecommendedPath = () => {
-    console.log(locations);
     if (destination && source) {
       alert(`Recommended path from ${source} to ${destination}`);
       setPathVisible(true);
@@ -57,68 +49,90 @@ function App() {
     }
   };
 
-  const sourceCoords = locations[source] || [0, 0];
-  const destinationCoords = locations[destination] || [0, 0];
+  const sourceCoords = locations[source] || null;
+  const destinationCoords = locations[destination] || null;
 
   const dockMarkerIcon = new L.Icon({
     iconUrl: dockIcon,
-    iconSize: [50, 50],
-    iconAnchor: [25, 50],
-    popupAnchor: [0, -50],
+    iconSize: [25, 25],
+    iconAnchor: [12.5, 25],
+    popupAnchor: [0, -25],
   });
 
   return (
-    <div className="App">
-      <Header />
+      <div className="App">
+        <Header />
 
-      <div className="dropdown-container">
-        <Dropdown
-          label="Destination"
-          value={destination}
-          options={["New York", "London", "Tokyo"]}
-          onChange={setDestination}
-        />
-        <Dropdown
-          label="Source"
-          value={source}
-          options={["Paris", "Berlin", "Sydney"]}
-          onChange={setSource}
-        />
+        <div className="dropdown-container">
+          <Dropdown
+              label="Destination"
+              value={destination}
+              options={Object.keys(locations)} // Dynamic options based on Firestore data
+              onChange={setDestination}
+          />
+          <Dropdown
+              label="Source"
+              value={source}
+              options={Object.keys(locations)} // Dynamic options based on Firestore data
+              onChange={setSource}
+          />
 
-        <RecommendedPathButton onClick={handleRecommendedPath} />
-      </div>
+          <RecommendedPathButton onClick={handleRecommendedPath} />
+        </div>
 
-      <p>
-        Selected Destination: {destination || "None"} <br />
-        Selected Source: {source || "None"}
-      </p>
+        <p>
+          Selected Destination: {destination || "None"} <br />
+          Selected Source: {source || "None"}
+        </p>
 
-      {pathVisible && (
         <div className="map-container">
           <MapContainer
-            center={sourceCoords}
-            zoom={2}
-            scrollWheelZoom={false}
-            style={{ height: "500px", width: "100%" }}
+              center={[20, 0]} // Initial center of the map, can be adjusted as needed
+              zoom={2}
+              scrollWheelZoom={false}
+              style={{ height: "500px", width: "100%" }}
           >
             <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={sourceCoords} icon={dockMarkerIcon}>
-              <Popup>Source: {source}</Popup>
-            </Marker>
-            <Marker position={destinationCoords} icon={dockMarkerIcon}>
-              <Popup>Destination: {destination}</Popup>
-            </Marker>
-            <Polyline
-              positions={[sourceCoords, destinationCoords]}
-              color="blue"
-            />
+
+            {/* Render all locations as markers if no specific source/destination is selected */}
+            {!source && !destination &&
+                Object.keys(locations).map((location) => (
+                    <Marker
+                        key={location}
+                        position={locations[location]}
+                        icon={dockMarkerIcon}
+                    >
+                      <Popup>{location}</Popup>
+                    </Marker>
+                ))
+            }
+
+            {/* Render source and destination markers if selected */}
+            {sourceCoords && (
+                <Marker position={sourceCoords} icon={dockMarkerIcon}>
+                  <Popup>Source: {source}</Popup>
+                </Marker>
+            )}
+
+            {destinationCoords && (
+                <Marker position={destinationCoords} icon={dockMarkerIcon}>
+                  <Popup>Destination: {destination}</Popup>
+                </Marker>
+            )}
+
+            {/* Render path between source and destination if both are selected */}
+            {pathVisible && sourceCoords && destinationCoords && (
+                <Polyline
+                    positions={[sourceCoords, destinationCoords]}
+                    color="blue"
+                />
+            )}
           </MapContainer>
         </div>
-      )}
-    </div>
+      </div>
   );
 }
 
