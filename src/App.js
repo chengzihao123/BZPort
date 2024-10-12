@@ -42,6 +42,8 @@ function App() {
                 destinationCoords={destinationCoords}
                 locations={locations}
                 pathVisible={pathVisible}
+                sourceType={source ? locations[source].type : null}
+                destinationType={destination ? locations[destination].type : null}
             />
         </div>
     );

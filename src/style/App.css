@@ -7,7 +7,7 @@
 
 .App-header {
   background-color: #282c34;
-  height: 13vh;
+  height: 15vh;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -26,8 +26,8 @@
 .header-image {
   flex-grow: 1;
   height: 100%;
-  background-image: url('../images/port.png');
-  background-position: center;
+  background-image: url('../images/port.jpg');
+  background-position: top;
   background-size: cover;
   background-repeat: no-repeat;
 }

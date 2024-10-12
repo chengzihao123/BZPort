@@ -13,7 +13,10 @@ export const useLocations = () => {
 
             const newLocations = {};
             nodesList.forEach((node) => {
-                newLocations[node.name] = node.Location;
+                newLocations[node.name] = {
+                    location: node.Location,
+                    type: node.type // Assuming the type field is called 'type' in your Firestore document
+                };
             });
             setLocations(newLocations);
         };
