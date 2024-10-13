@@ -79,7 +79,7 @@ class Graph {
         let currentNode = this.nodes.find(n => n.id === currentNodeId)!;
         if (edge.Location && edge.Location.length > 0) {
             let lastLocation = edge.Location[edge.Location.length - 1];  // Get the last coordinate of the edge
-            return this.nodes.find(n => n.Location[0] === lastLocation[0] && n.Location[1] === lastLocation[1]) || null;
+            return this.nodes.find(n => n.Location[0] === lastLocation.lat && n.Location[1] === lastLocation.lng) || null;
         }
         return null;
     }
@@ -92,7 +92,7 @@ const nodes: MapNode[] = [
         id: 1,
         Continent: "North America",
         Country: "USA",
-        Location: [1, 1],  // New York
+        Location: [40.7128, -74.0060],  // New York
         name: "New York",
         type: "City",
         seaEdges: null,
@@ -100,121 +100,139 @@ const nodes: MapNode[] = [
             {
                 distance: 500,
                 duration: 90,
-                Location: [[1, 1], [3, 3]]  // New York to London by air
+                Location: [{ lat: 40.7128, lng: -74.0060 }, { lat: 51.5074, lng: -0.1278 }]  // New York to London
             },
             {
                 distance: 600,
                 duration: 105,
-                Location: [[1, 1], [4, 4]]  // New York to Paris by air
+                Location: [{ lat: 40.7128, lng: -74.0060 }, { lat: 48.8566, lng: 2.3522 }]  // New York to Paris
             }
         ],
         carEdges: [{
             distance: 800,
             duration: 480,
-            Location: [[1, 1], [2, 2]]  // New York to Toronto by car
+            Location: [{ lat: 40.7128, lng: -74.0060 }, { lat: 43.65107, lng: -79.347015 }]  // New York to Toronto
         }]
     },
     {
         id: 2,
         Continent: "North America",
         Country: "Canada",
-        Location: [2, 2],  // Toronto
+        Location: [43.65107,  -79.347015],  // Toronto
         name: "Toronto",
         type: "City",
         seaEdges: null,
-        airEdges: [{
-            distance: 700,
-            duration: 120,
-            Location: [[2, 2], [3, 3]]  // Toronto to London by air
-        }],
+        airEdges: [
+            {
+                distance: 700,
+                duration: 120,
+                Location: [{ lat: 43.65107, lng: -79.347015 }, { lat: 51.5074, lng: -0.1278 }]  // Toronto to London
+            },
+            {
+                distance: 800,
+                duration: 130,
+                Location: [{ lat: 43.65107, lng: -79.347015 }, { lat: 48.8566, lng: 2.3522 }]  // Toronto to Paris
+            }
+        ],
         carEdges: [{
             distance: 800,
             duration: 480,
-            Location: [[2, 2], [1, 1]]  // Toronto to New York by car
+            Location: [{ lat: 43.65107, lng: -79.347015 }, { lat: 40.7128, lng: -74.0060 }]  // Toronto to New York
         }]
     },
     {
         id: 3,
         Continent: "Europe",
         Country: "UK",
-        Location: [3, 3],  // London
+        Location: [51.5074, -0.1278],  // London
         name: "London",
         type: "City",
-        seaEdges: [{
-            distance: 350,
-            duration: 240,
-            Location: [[3, 3], [4, 4]]  // London to Paris by sea (ferry)
-        }],
+        seaEdges: [
+            {
+                distance: 350,
+                duration: 240,
+                Location: [{ lat: 51.5074, lng: -0.1278 }, { lat: 48.8566, lng: 2.3522 }]  // London to Paris by sea
+            },
+            {
+                distance: 8500,
+                duration: 960,
+                Location: [{ lat: 51.5074, lng: -0.1278 }, { lat: 39.9042, lng: 116.4074 }]  // London to Beijing by sea (fictional)
+            }
+        ],
         airEdges: [
             {
                 distance: 500,
                 duration: 90,
-                Location: [[3, 3], [1, 1]]  // London to New York by air
+                Location: [{ lat: 51.5074, lng: -0.1278 }, { lat: 40.7128, lng: -74.0060 }]  // London to New York
             },
             {
                 distance: 700,
                 duration: 120,
-                Location: [[3, 3], [2, 2]]  // London to Toronto by air
+                Location: [{ lat: 51.5074, lng: -0.1278 }, { lat: 43.65107, lng: -79.347015 }]  // London to Toronto
             }
         ],
         carEdges: [{
             distance: 450,
             duration: 300,
-            Location: [[3, 3], [4, 4]]  // London to Paris by car
+            Location: [{ lat: 51.5074, lng: -0.1278 }, { lat: 48.8566, lng: 2.3522 }]  // London to Paris by car
         }]
     },
     {
         id: 4,
         Continent: "Europe",
         Country: "France",
-        Location: [4, 4],  // Paris
+        Location: [48.8566, 2.3522],  // Paris
         name: "Paris",
         type: "City",
-        seaEdges: [{
-            distance: 350,
-            duration: 240,
-            Location: [[4, 4], [3, 3]]  // Paris to London by sea (ferry)
-        }],
+        seaEdges: [
+            {
+                distance: 350,
+                duration: 240,
+                Location: [{ lat: 48.8566, lng: 2.3522 }, { lat: 51.5074, lng: -0.1278 }]  // Paris to London by sea
+            }
+        ],
         airEdges: [
             {
                 distance: 600,
                 duration: 105,
-                Location: [[4, 4], [1, 1]]  // Paris to New York by air
+                Location: [{ lat: 48.8566, lng: 2.3522 }, { lat: 40.7128, lng: -74.0060 }]  // Paris to New York
             },
             {
                 distance: 8150,
                 duration: 780,
-                Location: [[4, 4], [5, 5]]  // Paris to Beijing by air
+                Location: [{ lat: 48.8566, lng: 2.3522 }, { lat: 39.9042, lng: 116.4074 }]  // Paris to Beijing
             }
         ],
         carEdges: [{
             distance: 450,
             duration: 300,
-            Location: [[4, 4], [3, 3]]  // Paris to London by car
+            Location: [{ lat: 48.8566, lng: 2.3522 }, { lat: 51.5074, lng: -0.1278 }]  // Paris to London by car
         }]
     },
     {
         id: 5,
         Continent: "Asia",
         Country: "China",
-        Location: [5, 5],  // Beijing
+        Location: [39.9042, 116.4074],  // Beijing
         name: "Beijing",
         type: "City",
-        seaEdges: [{
-            distance: 8500,
-            duration: 960,
-            Location: [[5, 5], [3, 3]]  // Beijing to London by sea (fictional sea route)
-        }],
+        seaEdges: [
+            {
+                distance: 8500,
+                duration: 960,
+                Location: [{ lat: 39.9042, lng: 116.4074 }, { lat: 51.5074, lng: -0.1278 }]  // Beijing to London by sea
+            }
+        ],
         airEdges: [
             {
                 distance: 6800,
                 duration: 840,
-                Location: [[5, 5], [1, 1]]  // Beijing to New York by air
+                Location: [{ lat: 39.9042, lng: 116.4074 }, { lat: 40.7128, lng: -74.0060 }]  // Beijing to New York
             },
             {
                 distance: 8150,
                 duration: 780,
-                Location: [[5, 5], [4, 4]]  // Beijing to Paris by air
+                Location: [{ lat: 39.9042, lng: 116.4074 }, { lat: 48.8566, lng: 2.3522 }]  // Beijing to Paris
             }
         ],
         carEdges: null
@@ -223,7 +241,7 @@ const nodes: MapNode[] = [
         id: 6,
         Continent: "Asia",
         Country: "Japan",
-        Location: [6, 6],  // Tokyo (Japan is unreachable)
+        Location: [35.6762, 139.6503],  // Tokyo (Japan is unreachable)
         name: "Tokyo",
         type: "City",
         seaEdges: null,
@@ -231,12 +249,13 @@ const nodes: MapNode[] = [
             {
                 distance: 10850,
                 duration: 780,
-                Location: [[6, 6], [5, 5]]  // Tokyo to Beijing by air (not symmetric)
+                Location: [{ lat: 35.6762, lng: 139.6503 }, { lat: 39.9042, lng: 116.4074 }]  // Tokyo to Beijing by air
             }
         ],
         carEdges: null
     }
 ];
+
 
 
 // Symmetric edges have been created. Each connection from one node to another (e.g., by car, air, sea) has a corresponding reverse edge.
@@ -247,7 +266,9 @@ const graph = new Graph(nodes);
 
 for (let i = 1; i < 6; i++) {
     // if (i === 6) continue;  // Skip Tokyo (unreachable)
-    const result = graph.dijkstra(i,5);
+    const result = graph.dijkstra(i,3
+
+    );
     if (result) {
         console.log("Path found:", result.path);
         console.log("Total distance:", result.totalDistance);
