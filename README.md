@@ -94,6 +94,7 @@ Here's how to use the application:
 
 3. **Interact with the Map:** The map allows zooming and clicking on nodes for more details.
 
+![image](src\images\image.png)
 ---
 
 ## Contact
