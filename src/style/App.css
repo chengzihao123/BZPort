@@ -1,10 +1,13 @@
 .App {
   text-align: center;
+  height: 100vh; /* Ensure the App container fills the full viewport height */
+  display: flex;
+  flex-direction: column;
 }
 
 .App-header {
   background-color: #282c34;
-  height: 15vh;
+  height: 12.5vh;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -23,8 +26,8 @@
 .header-image {
   flex-grow: 1;
   height: 100%;
-  background-image: url('../images/port.png');
-  background-position: center;
+  background-image: url('../images/port.jpg');
+  background-position: top;
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -54,6 +57,7 @@ select {
   color: white;
   border-radius: 5px;
   cursor: pointer;
+  margin: 15px;
 }
 
 .recommend-button:hover {
@@ -61,5 +65,20 @@ select {
 }
 
 .map-container {
-  margin-top: 30px;
+  flex-grow: 1;
+  padding: 0;
+  height: calc(100vh - 13vh - 50px);
+  width: 100%;
+}
+
+.controls-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.map {
+  height: 100%;
+  width: 100%;
 }
