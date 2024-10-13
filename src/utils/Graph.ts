@@ -1,44 +1,78 @@
 import MapNode, { Edge } from "../types/MapNodeType";
+import {
+    CARGO_TRUCK_CO2_EMISSIONS_KG_PER_KM_PER_TON,
+    CARGO_SHIP_CO2_EMISSIONS_KG_PER_KM_PER_TON,
+    CARGO_AIRCRAFT_CO2_EMISSIONS_KG_PER_KM_PER_TON
+} from "../constants/BackendConstants";
 
-class Graph {
+export class Graph {
     nodes: MapNode[];
 
     constructor(nodes: MapNode[]) {
         this.nodes = nodes;
     }
 
-    dijkstra(startId: number, endId: number): { path: Edge[], totalDistance: number } | null {
+    dijkstra(startId: number, endId: number, tonnage: number): { path: Edge[], totalDistance: number, totalDuration: number, totalCO2: number } | null {
         let distances: { [key: number]: number } = {};  // Store the shortest distance from start to each node
         let previousEdges: { [key: number]: Edge | null } = {};  // Store the edge leading to each node
         let previousNodes: { [key: number]: number | null } = {};  // Store the previous node leading to the current one
         let visited: Set<number> = new Set();  // Track visited nodes
-        let priorityQueue: { id: number, distance: number }[] = [];  // Priority queue to explore nodes
+        let priorityQueue: { idx: number, emissions: number }[] = [];  // Priority queue to explore nodes
+        let totalCO2Emissions: { [key: number]: number } = {};  // Store CO2 emissions from start to each node
+        let totalDurations: { [key: number]: number } = {};  // Store the total duration to each node
 
         // Initialize distances and previous arrays
         this.nodes.forEach(node => {
-            distances[node.id] = Infinity;
-            previousEdges[node.id] = null;
-            previousNodes[node.id] = null;
+            distances[node.idx] = Infinity;
+            previousEdges[node.idx] = null;
+            previousNodes[node.idx] = null;
+            totalCO2Emissions[node.idx] = Infinity;
+            totalDurations[node.idx] = Infinity;
         });
-        distances[startId] = 0;
-        priorityQueue.push({ id: startId, distance: 0 });
 
-        // Helper function to process edges and update the priority queue
-        const processEdges = (edges: Edge[] | null, currentNodeId: number) => {
+        distances[startId] = 0;
+        totalCO2Emissions[startId] = 0;
+        totalDurations[startId] = 0;
+        priorityQueue.push({ idx: startId, emissions: 0 });
+
+        // Helper function to calculate CO2 emissions for an edge
+        const calculateCO2Emissions = (edge: Edge, tonnage: number, type: string): number => {
+            let emissionFactor: number;
+
+            if (type === "air") {
+                emissionFactor = CARGO_AIRCRAFT_CO2_EMISSIONS_KG_PER_KM_PER_TON;
+            } else if (type  === "sea") {
+                emissionFactor = CARGO_SHIP_CO2_EMISSIONS_KG_PER_KM_PER_TON;
+            } else {
+                emissionFactor = CARGO_TRUCK_CO2_EMISSIONS_KG_PER_KM_PER_TON;
+            }
+
+            return (edge.distance ?? Infinity) * emissionFactor * tonnage;
+        };
+
+        // Process edges and update priority queue
+        const processEdges = (edges: (Edge | null)[] | null, currentNodeId: number, type: string) => {
             if (!edges) return;
 
             for (let edge of edges) {
+                if (!edge) continue;
+
                 let nextNode = this.findNeighborNode(currentNodeId, edge);
-                if (!nextNode || visited.has(nextNode.id)) continue;
+                if (!nextNode || visited.has(nextNode.idx)) continue;
 
-                let newDistance = distances[currentNodeId] + (edge.distance || 0);
+                let newCO2Emissions = totalCO2Emissions[currentNodeId] + calculateCO2Emissions(edge, tonnage, type);
+                let newDistance = distances[currentNodeId] + (edge?.distance || 0);
+                let newDuration = totalDurations[currentNodeId] + (edge?.duration || 0);
 
-                if (newDistance < distances[nextNode.id]) {
-                    distances[nextNode.id] = newDistance;
-                    previousEdges[nextNode.id] = edge;
-                    previousNodes[nextNode.id] = currentNodeId;
-                    priorityQueue.push({ id: nextNode.id, distance: newDistance });
-                    priorityQueue.sort((a, b) => a.distance - b.distance);  // Sort by distance
+                if (newCO2Emissions < totalCO2Emissions[nextNode.idx]) {
+                    distances[nextNode.idx] = newDistance;
+                    previousEdges[nextNode.idx] = edge;
+                    previousNodes[nextNode.idx] = currentNodeId;
+                    totalCO2Emissions[nextNode.idx] = newCO2Emissions;
+                    totalDurations[nextNode.idx] = newDuration;
+
+                    priorityQueue.push({ idx: nextNode.idx, emissions: newCO2Emissions });
+                    priorityQueue.sort((a, b) => a.emissions - b.emissions);  // Sort by CO2 emissions
                 }
             }
         };
@@ -46,39 +80,41 @@ class Graph {
         // Dijkstra's algorithm execution
         while (priorityQueue.length > 0) {
             let currentNode = priorityQueue.shift()!;
-            if (visited.has(currentNode.id)) continue;
+            if (visited.has(currentNode.idx)) continue;
 
-            visited.add(currentNode.id);
-            let currentMapNode = this.nodes.find(n => n.id === currentNode.id)!;
+            visited.add(currentNode.idx);
+            let currentMapNode = this.nodes.find(n => n.idx === currentNode.idx)!;
 
-            // Process all types of edges (sea, air, car)
-            processEdges(currentMapNode.seaEdges, currentNode.id);
-            processEdges(currentMapNode.airEdges, currentNode.id);
-            processEdges(currentMapNode.carEdges, currentNode.id);
+            processEdges(currentMapNode.seaEdges, currentNode.idx, "sea");
+            processEdges(currentMapNode.airEdges, currentNode.idx, "air");
+            processEdges(currentMapNode.carEdges, currentNode.idx, "car");
         }
 
-        // If the end node is not reachable
-        if (distances[endId] === Infinity) return null;
+        if (totalCO2Emissions[endId] === Infinity) return null;
 
         // Backtrack to find the path
         let path: Edge[] = [];
         let currentId = endId;
         while (currentId !== startId) {
             let edge = previousEdges[currentId];
-            if (!edge) return null;  // No path found
+            if (!edge) return null;
             path.unshift(edge);  // Add edge to the path
             currentId = previousNodes[currentId]!;  // Move to the previous node
         }
 
-        return { path, totalDistance: distances[endId] };
+        return {
+            path,
+            totalDistance: distances[endId],
+            totalDuration: totalDurations[endId],
+            totalCO2: totalCO2Emissions[endId]
+        };
     }
 
-    // Function to find the neighbor node connected by an edge
-    private findNeighborNode(currentNodeId: number, edge: Edge): MapNode | null {
-        // Find a node connected by this edge based on its location
-        let currentNode = this.nodes.find(n => n.id === currentNodeId)!;
+    private findNeighborNode(currentNodeId: number, edge: Edge | null): MapNode | null {
+        if (!edge) return null;
+        let currentNode = this.nodes.find(n => n.idx === currentNodeId)!;
         if (edge.Location && edge.Location.length > 0) {
-            let lastLocation = edge.Location[edge.Location.length - 1];  // Get the last coordinate of the edge
+            let lastLocation = edge.Location[edge.Location.length - 1];
             return this.nodes.find(n => n.Location[0] === lastLocation.lat && n.Location[1] === lastLocation.lng) || null;
         }
         return null;
@@ -89,7 +125,8 @@ class Graph {
 // Example usage:
 const nodes: MapNode[] = [
     {
-        id: 1,
+        id : "1",
+        idx: 1,
         Continent: "North America",
         Country: "USA",
         Location: [40.7128, -74.0060],  // New York
@@ -115,7 +152,8 @@ const nodes: MapNode[] = [
         }]
     },
     {
-        id: 2,
+        id : "2",
+        idx: 2,
         Continent: "North America",
         Country: "Canada",
         Location: [43.65107,  -79.347015],  // Toronto
@@ -141,7 +179,8 @@ const nodes: MapNode[] = [
         }]
     },
     {
-        id: 3,
+        id : "3",
+        idx: 3,
         Continent: "Europe",
         Country: "UK",
         Location: [51.5074, -0.1278],  // London
@@ -178,7 +217,8 @@ const nodes: MapNode[] = [
         }]
     },
     {
-        id: 4,
+        id : "4",
+        idx: 4,
         Continent: "Europe",
         Country: "France",
         Location: [48.8566, 2.3522],  // Paris
@@ -210,7 +250,8 @@ const nodes: MapNode[] = [
         }]
     },
     {
-        id: 5,
+        id : "5",
+        idx: 5,
         Continent: "Asia",
         Country: "China",
         Location: [39.9042, 116.4074],  // Beijing
@@ -238,7 +279,8 @@ const nodes: MapNode[] = [
         carEdges: null
     },
     {
-        id: 6,
+        id : "6",
+        idx: 6,
         Continent: "Asia",
         Country: "Japan",
         Location: [35.6762, 139.6503],  // Tokyo (Japan is unreachable)
@@ -261,16 +303,49 @@ const nodes: MapNode[] = [
 // Symmetric edges have been created. Each connection from one node to another (e.g., by car, air, sea) has a corresponding reverse edge.
 
 
-const graph = new Graph(nodes);
 
+
+// const fs = require('fs');
+
+// const jsonFilePath = 'src/utils/firestore-data.json'
+
+// fs.readFile(jsonFilePath, 'utf8', (err, data) => {
+//     if (err) {
+//         console.error('Error reading the JSON file:', err);
+//         return;
+//     }
+
+//     // Parse the JSON data
+//     let nodes;
+//     try {
+//         nodes = JSON.parse(data);
+//     } catch (parseError) {
+//         console.error('Error parsing JSON:', parseError);
+//         return;
+//     }
+//     const graph = new Graph(nodes);
+//     for (let node of nodes) {
+//         const result = graph.dijkstra(node.idx, 3, 1000);
+
+//         if (result) {
+//             console.log("Path found:", result.path);
+//             console.log("Total distance:", result.totalDistance);
+//             console.log("Total duration:", result.path);
+
+//         } else {
+//             console.log("No path found.", node.type, nodes[3].type);
+//         }
+//     }
+// });
+const graph = new Graph(nodes);
 
 for (let i = 1; i < 6; i++) {
     // if (i === 6) continue;  // Skip Tokyo (unreachable)
-    const result = graph.dijkstra(i,3
-
-    );
+    const result = graph.dijkstra(i,1, 1000);
     if (result) {
         console.log("Path found:", result.path);
+        console.log("Total CO2 emissions:", result.totalCO2);
+        console.log("Total duration:", result.totalDuration);
         console.log("Total distance:", result.totalDistance);
     } else {
         console.log("No path found.");
