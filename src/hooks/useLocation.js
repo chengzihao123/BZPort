@@ -9,16 +9,24 @@ export const useLocations = () => {
     const fetchData = async () => {
       const itemsCollection = collection(db, "nodes");
       const snapshot = await getDocs(itemsCollection);
-      const nodesList = snapshot.docs.map((doc) => doc.data());
-      console.log(nodesList);
+      const nodesList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      console.log("Fetched nodes:", nodesList);
 
       const newLocations = {};
       nodesList.forEach((node) => {
         newLocations[node.name] = {
-          location: node.Location,
-          type: node.type, // Assuming the type field is called 'type' in your Firestore document
+          id: node.id,
+          Location: node.Location,
+          type: node.type,
+          Continent: node.Continent,
+          Country: node.Country,
+          name: node.name,
         };
       });
+      console.log("Processed locations:", newLocations);
       setLocations(newLocations);
     };
 

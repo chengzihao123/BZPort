@@ -1,10 +1,10 @@
 import { MapContainer, TileLayer, Marker, Polyline, Popup } from "react-leaflet";
 import L from "leaflet";
 import dockIcon from "../images/dock.png";
-import airportIcon from "../images/airport.png"; // Make sure to add this icon
+import airportIcon from "../images/airport.png";
 import "leaflet/dist/leaflet.css";
 
-const BZPortMap = ({ sourceCoords, destinationCoords, locations, pathVisible, sourceType, destinationType }) => {
+const BZPortMap = ({ sourceCoords, destinationCoords, locations, pathVisible, calculatedPath, sourceType, destinationType }) => {
     const dockMarkerIcon = new L.Icon({
         iconUrl: dockIcon,
         iconSize: [25, 25],
@@ -33,28 +33,32 @@ const BZPortMap = ({ sourceCoords, destinationCoords, locations, pathVisible, so
             {/* Render all markers if no source/destination selected */}
             {!sourceCoords && !destinationCoords &&
                 Object.entries(locations).map(([name, data]) => (
-                    <Marker key={name} position={data.location} icon={getIcon(data.type)}>
+                    <Marker key={name} position={data.Location} icon={getIcon(data.type)}>
                         <Popup>{name}</Popup>
-                    </Marker> 
+                    </Marker>
                 ))
             }
 
             {/* Source and destination markers */}
             {sourceCoords && Array.isArray(sourceCoords) && (
                 <Marker position={sourceCoords} icon={getIcon(sourceType)}>
-                <Popup>Source</Popup>
+                    <Popup>Source</Popup>
                 </Marker>
             )}
             {destinationCoords && Array.isArray(destinationCoords) && (
                 <Marker position={destinationCoords} icon={getIcon(destinationType)}>
-                <Popup>Destination</Popup>
+                    <Popup>Destination</Popup>
                 </Marker>
             )}
 
-
             {/* Draw the path */}
-            {pathVisible && sourceCoords && destinationCoords && (
-                <Polyline positions={[sourceCoords, destinationCoords]} color="blue" />
+            {pathVisible && calculatedPath.length > 0 && (
+                <Polyline
+                    positions={calculatedPath.flatMap(edge =>
+                        edge.Location ? edge.Location.map(loc => [loc.lat, loc.lng]) : []
+                    )}
+                    color="blue"
+                />
             )}
         </MapContainer>
     );

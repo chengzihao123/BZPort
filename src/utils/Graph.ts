@@ -1,6 +1,6 @@
 import MapNode, { Edge } from "../types/MapNodeType";
 
-class Graph {
+export class Graph {
     nodes: MapNode[];
 
     constructor(nodes: MapNode[]) {
@@ -277,3 +277,4 @@ for (let i = 1; i < 6; i++) {
     }
 
 }
+
