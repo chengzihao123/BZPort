@@ -13,7 +13,10 @@ interface MapNode {
 export interface Edge {
     distance: number | null;
     duration: number | null;
-    Location: [number, number][] | null;
+    Location:{
+        lat: number;
+        lng: number;
+    }[] | null;
 }
 
 

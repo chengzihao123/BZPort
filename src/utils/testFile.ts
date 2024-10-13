@@ -1,91 +1,96 @@
-import Nodes from "./sampleData";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore"; // arrayUnion is used to add elements to an array 
+import { db } from "../firebase-config"; // Firebase config 
+import { CARGO_AIRCRAFT_SPEED_KM_PER_H, M_TO_KM, S_TO_H, MS_TO_S } from "../constants/BackendConstants";
+
 import GeoJSONFeatureCollection from "../types/seaRouteResponseTypes";
 import haversineDistance from "./airRouteUtils";
 import getShortestCarRoute from "./osrmUtils";
 import getShortestSeaRoute from "./searouteUtils";
 import MapNode from "../types/MapNodeType";
 import { Edge } from "../types/MapNodeType";
-const first = Nodes[0];
-const second = Nodes[1];
-async function test() {
 
-    // console.log(`Distance between ${first.name} and ${second.name}: ${haversineDistance(first, second)}`);
-    const carRoute = await getShortestCarRoute(first, second);
-    console.log(`Shortest car route between ${first.name} and ${second.name}: ${carRoute.distance}`);
-    console.log(`Shortest car route between ${first.name} and ${second.name}: ${carRoute.duration}`);
-    // console.log(carRoute.geometry);
-    // write to file data.txt the geometry in json format
-    // const fs = require('fs');
-    // // change property name coordinates to Location
-    // const LocationArr: [number, number][][][] = [];
+// async function test() {
+
+//     // console.log(`Distance between ${first.name} and ${second.name}: ${haversineDistance(first, second)}`);
+//     const carRoute = await getShortestCarRoute(first, second);
+//     console.log(`Shortest car route between ${first.name} and ${second.name}: ${carRoute.distance}`);
+//     console.log(`Shortest car route between ${first.name} and ${second.name}: ${carRoute.duration}`);
+//     // console.log(carRoute.geometry);
+//     // write to file data.txt the geometry in json format
+//     // const fs = require('fs');
+//     // // change property name coordinates to Location
+//     // const LocationArr: [number, number][][][] = [];
     
-    // // initialize array with null
-    // for (let i = 0; i < 1; ++i) {
-    //     LocationArr[i] = [];
-    //     for (let j = 0; j < 1; ++j) {
-    //         LocationArr[i][j] = [];
-    //     }
-    // }
+//     // // initialize array with null
+//     // for (let i = 0; i < 1; ++i) {
+//     //     LocationArr[i] = [];
+//     //     for (let j = 0; j < 1; ++j) {
+//     //         LocationArr[i][j] = [];
+//     //     }
+//     // }
 
-    // // swap longitude and latitude
-    // carRoute.geometry.coordinates.forEach(element => {
-    //     const temp = element[0];
-    //     element[0] = element[1];
-    //     element[1] = temp;
-    // });
+//     // // swap longitude and latitude
+//     // carRoute.geometry.coordinates.forEach(element => {
+//     //     const temp = element[0];
+//     //     element[0] = element[1];
+//     //     element[1] = temp;
+//     // });
 
     
 
 
 
-    // for (let i = 0; i < Nodes.length; ++i) {
-    //     for (let j = i + 1; j < Nodes.length; ++j) {
-    //         // Create an IIFE to capture current values of i and j
-    //         const currI = i;
-    //         const currJ = j;
+//     // for (let i = 0; i < Nodes.length; ++i) {
+//     //     for (let j = i + 1; j < Nodes.length; ++j) {
+//     //         // Create an IIFE to capture current values of i and j
+//     //         const currI = i;
+//     //         const currJ = j;
             
-    //             console.log(`Distance between ${Nodes[currI].name} and ${Nodes[currJ].name}: ${haversineDistance(Nodes[i], Nodes[j])}`);
+//     //             console.log(`Distance between ${Nodes[currI].name} and ${Nodes[currJ].name}: ${haversineDistance(Nodes[i], Nodes[j])}`);
                 
-    //             // Await the result of the async function
-    //             const carRoute = await getShortestCarRoute(Nodes[currI], Nodes[currJ]);
-    //             console.log(`Shortest car route between ${Nodes[currI].name} and ${Nodes[currJ].name}: ${carRoute.distance}`);
+//     //             // Await the result of the async function
+//     //             const carRoute = await getShortestCarRoute(Nodes[currI], Nodes[currJ]);
+//     //             console.log(`Shortest car route between ${Nodes[currI].name} and ${Nodes[currJ].name}: ${carRoute.distance}`);
                 
-    //             const seaRoute = await getShortestSeaRoute(Nodes[currI], Nodes[currJ]);
-    //             console.log(`Shortest sea route between ${Nodes[currI].name} and ${Nodes[currJ].name}: ${seaRoute}`);
+//     //             const seaRoute = await getShortestSeaRoute(Nodes[currI], Nodes[currJ]);
+//     //             console.log(`Shortest sea route between ${Nodes[currI].name} and ${Nodes[currJ].name}: ${seaRoute}`);
             
-    //     }
-    // }
-}
-test();
+//     //     }
+//     // }
+// }
+// test();
 
 function getAirEdgeBetweenAirports(Airport1: MapNode, Airport2: MapNode): Edge {
     const distance = haversineDistance(Airport1, Airport2);
     return {
         distance: distance,
         duration: distance / CARGO_AIRCRAFT_SPEED_KM_PER_H,
-        Location: 
-            [Airport1.Location as [number, number], 
-            Airport2.Location as [number, number]]
+        Location: [
+            convertLocationArrToObject(Airport1.Location as [number, number]), 
+            convertLocationArrToObject(Airport2.Location as [number, number])
+        ]
     }
 }
 
 async function getShortestCarRouteBetweenPorts(Port1: MapNode, Port2: MapNode): Promise<Edge> {
     const carRoute = await getShortestCarRoute(Port1, Port2);
     carRoute.geometry.coordinates = swapLonLat(carRoute.geometry.coordinates);
+
     return {
         distance: carRoute.distance * M_TO_KM,
         duration: carRoute.duration * S_TO_H,
-        Location: carRoute.geometry.coordinates
+        Location: carRoute.geometry.coordinates.map(convertLocationArrToObject),
     }
 }
 
 async function getSeaEdgeBetweenPorts(Port1: MapNode, Port2: MapNode): Promise<Edge> {
     const seaRoute = await getShortestSeaRoute(Port1, Port2);
     seaRoute.features[0].geometry.coordinates = swapLonLat(seaRoute.features[0].geometry.coordinates);
+
     return {
         distance: seaRoute.features[0].properties.distance * M_TO_KM,
         duration: seaRoute.features[0].properties.duration * MS_TO_S * S_TO_H,
-        Location: seaRoute.features[0].geometry.coordinates,
+        Location: seaRoute.features[0].geometry.coordinates.map(convertLocationArrToObject),
     }
 }
 
@@ -108,6 +113,15 @@ function swapLonLat(coordinates: [number, number][]): [number, number][] {
         element[1] = temp;
     });
     return coordinates;
+}
+
+function convertLocationArrToObject(GeoLoc: [number, number]): {lat: number, lng: number} {
+    const LocationObj = {
+        lat: GeoLoc[0],
+        lng: GeoLoc[1]
+    }
+    
+    return LocationObj;
 }
 
 async function getSeaEdges(Nodes: MapNode[]): Promise<(Edge | null)[][]> {
@@ -172,15 +186,25 @@ async function getCarEdges(Nodes: MapNode[]): Promise<(Edge | null)[][]> {
     return carEdges;
 }
 
-function getAirEdgesforEachPort(Nodes: MapNode[]): void {
-    const airEdges = getAirEdges(Nodes);
-
-    Nodes.forEach((node, index) => {
-        const airEdgesForNode = airEdges[index];
-        /*
-        write to the firebase
-
-        */
-    }
-    )
-}
+export function writeAirEdgesForEachPort(Nodes: MapNode[]): void { 
+    const airEdges = getAirEdges(Nodes); // Assume this returns an array of Edges[] for each node 
+   
+    Nodes.forEach(async (node, index) => { 
+      const airEdgesForNode: (Edge | null)[] = airEdges[index]; // Ensure this follows the Edges[] format 
+   
+      // Get reference to the document for each node 
+    const nodeDocRef = doc(db, "nodes", node.id.toString()); // Replace "nodes" with your actual collection name 
+   
+      // Update the 'airEdges' field for each node 
+      try { 
+        await updateDoc(nodeDocRef, { 
+          // Use Firestore's arrayUnion to add new entries without overwriting the whole array 
+          airEdges: airEdgesForNode
+        }); 
+   
+        console.log(`Successfully updated airEdges for node ${node.id}`); 
+      } catch (error) { 
+        console.error(`Error updating node ${node.id}:`, error); 
+      } 
+    }); 
+  }
