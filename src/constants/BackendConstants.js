@@ -40,7 +40,7 @@ calculated using the following website
 https://www.carboncare.org/en/co2-emissions-calculator
 */
 
-const CARGO_TRUCK_CO2_EMISSIONS_KG_PER_KM_PER_TON =  0.21813
+const CARGO_TRUCK_CO2_EMISSIONS_KG_PER_KM_PER_TON =  0.001
 const CARGO_SHIP_CO2_EMISSIONS_KG_PER_KM_PER_TON = 0.0095259
 const CARGO_AIRCRAFT_CO2_EMISSIONS_KG_PER_KM_PER_TON = 0.44908
 
