@@ -40,16 +40,17 @@ const BZPortMap = ({ sourceCoords, destinationCoords, locations, pathVisible, so
             }
 
             {/* Source and destination markers */}
-            {sourceCoords && (
+            {sourceCoords && Array.isArray(sourceCoords) && (
                 <Marker position={sourceCoords} icon={getIcon(sourceType)}>
-                    <Popup>Source</Popup>
+                <Popup>Source</Popup>
                 </Marker>
             )}
-            {destinationCoords && (
+            {destinationCoords && Array.isArray(destinationCoords) && (
                 <Marker position={destinationCoords} icon={getIcon(destinationType)}>
-                    <Popup>Destination</Popup>
+                <Popup>Destination</Popup>
                 </Marker>
             )}
+
 
             {/* Draw the path */}
             {pathVisible && sourceCoords && destinationCoords && (

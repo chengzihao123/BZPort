@@ -21,8 +21,9 @@ function App() {
         }
     };
 
-    const sourceCoords = locations[source] || null;
-    const destinationCoords = locations[destination] || null;
+    const sourceCoords = locations[source] ? locations[source].location : null;
+    const destinationCoords = locations[destination] ? locations[destination].location : null;
+
 
     return (
         <div className="App">
