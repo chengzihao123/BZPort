@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRecommendedPath } from '../hooks/useRecommendedPath';
-
+import { data }from '../utils/data.js';
 const RecommendedPathButton = ({
                                    nodes,
                                    selectedSourceId,
@@ -28,9 +28,10 @@ const RecommendedPathButton = ({
             const result = handleRecommendedPath(selectedSourceId, selectedDestinationId);
 
             if (result && result.path.length > 0) {
-                const pathCoordinates = result.path.map(edge =>
+                var pathCoordinates = result.path.map(edge =>
                     edge.Location ? edge.Location.map(loc => ({ lat: loc.lat, lng: loc.lng })) : []
                 );
+                // pathCoordinates = data;
                 onDrawPolyline(pathCoordinates);
             } else {
                 setError("No path found");

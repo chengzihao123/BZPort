@@ -21,7 +21,7 @@ const getShortestSeaRoute = async (start: MapNode, end: MapNode): Promise<GeoJSO
         method: 'GET',
         headers: {
           accept: 'application/json',
-          'x-api-key': 'PZwhYfb0O828K3Vsnat201ESu93mUyDp6bUmozdZ'
+          'x-api-key': 'OYwE2C5vmx9Qjl7pE1FMM6swwPO6QS2O5Lcju9ib'
         }
       };
       
@@ -128,7 +128,7 @@ export async function writeSeaEdgesForEachPort(): Promise<void> {
         seaEdges: seaEdgesForNode
       }); 
  
-      console.log(`Successfully updated airEdges for node ${node.id}`); 
+      console.log(`Successfully updated seaEdges for node ${node.id}`); 
     } catch (error) { 
       console.error(`Error updating node ${node.id}:`, error); 
     } 

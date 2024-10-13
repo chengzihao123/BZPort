@@ -19,7 +19,7 @@ async function getShortestCarRoute(start: MapNode, end: MapNode) {
 
         if (data.routes && data.routes.length > 0) {
             const route = data.routes[0];
-            // console.log('distance:', route.geometry);
+
             return {
                 distance: route.distance,  // Distance in meters
                 duration: route.duration,  // Duration in seconds

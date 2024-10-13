@@ -7,7 +7,7 @@ export const useRecommendedPath = (nodes) => {
 
     const handleRecommendedPath = (sourceId, destinationId) => {
         const graph = new Graph(nodes);
-        const result = graph.dijkstra(sourceId, destinationId, 1000);
+        const result = graph.dijkstra(sourceId, destinationId, 1);
 
         if (result) {
             return {

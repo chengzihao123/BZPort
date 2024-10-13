@@ -1,7 +1,16 @@
 import getShortestCarRoute from "./osrmUtils";
-import { writeAirEdgesForEachPort, writeCarEdgeForPair, writeCarEdgesForEachPort, writeCarEdgesForSpecifiedPort, writeSeaEdgesForSpecifiedPort } from "./commonUtils"
+import { writeAirEdgesForEachPort } from "./airRouteUtils";
+import { writeCarEdgesForSpecifiedPort } from "./osrmUtils";
+import { writeSeaEdgesForSpecifiedPort } from "./searouteUtils";
 
 
-writeCarEdgesForSpecifiedPort(7);
+
+// writeCarEdgesForSpecifiedPort(14)
+// writeCarEdgesForSpecifiedPort(15)
+// writeCarEdgesForSpecifiedPort(16)
+
+
+writeSeaEdgesForSpecifiedPort(3)
+// writeSeaEdgesForSpecifiedPort(13)
 
 
