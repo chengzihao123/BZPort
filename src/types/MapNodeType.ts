@@ -10,7 +10,6 @@ interface MapNode {
     carEdges: Edge[] | null;
 }
 
-
 export interface Edge {
     distance: number | null;
     duration: number | null;

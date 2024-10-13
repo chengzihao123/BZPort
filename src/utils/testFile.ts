@@ -171,3 +171,16 @@ async function getCarEdges(Nodes: MapNode[]): Promise<(Edge | null)[][]> {
     }
     return carEdges;
 }
+
+function getAirEdgesforEachPort(Nodes: MapNode[]): void {
+    const airEdges = getAirEdges(Nodes);
+
+    Nodes.forEach((node, index) => {
+        const airEdgesForNode = airEdges[index];
+        /*
+        write to the firebase
+
+        */
+    }
+    )
+}
