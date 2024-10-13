@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, orderBy, query } from 'firebase/firestore';
 import { M_TO_KM, MS_TO_S, S_TO_H } from '../constants/BackendConstants';
 import { db } from '../firebase-config';
 import MapNode, { Edge } from '../types/MapNodeType';
@@ -138,7 +138,7 @@ export async function writeSeaEdgesForEachPort(): Promise<void> {
 export async function writeSeaEdgesForSpecifiedPort(i: number): Promise<void> { 
   let Nodes;
   try {
-      const nodesCollection = collection(db, "nodes");
+      const nodesCollection =  query(collection(db, "nodes"), orderBy("idx", "asc"));
       const nodesSnapshot = await getDocs(nodesCollection);
       const data: any = [];
       nodesSnapshot.forEach(doc => {

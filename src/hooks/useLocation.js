@@ -19,11 +19,16 @@ export const useLocations = () => {
       nodesList.forEach((node) => {
         newLocations[node.name] = {
           id: node.id,
+          idx: node.idx,
           Location: node.Location,
           type: node.type,
           Continent: node.Continent,
           Country: node.Country,
           name: node.name,
+          seaEdges: node.seaEdges,
+          carEdges: node.carEdges,
+          airEdges: node.airEdges
+          
         };
       });
       console.log("Processed locations:", newLocations);

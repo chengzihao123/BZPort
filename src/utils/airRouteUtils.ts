@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, query, orderBy } from 'firebase/firestore';
 import { CARGO_AIRCRAFT_SPEED_KM_PER_H } from '../constants/BackendConstants';
 import { db } from '../firebase-config';
 import MapNode, { Edge } from '../types/MapNodeType';
@@ -70,7 +70,7 @@ function getAirEdges(Nodes: MapNode[]): (Edge | null)[][] {
 export async function writeAirEdgesForEachPort(): Promise<void> { 
     var Nodes;
     try {
-        const nodesCollection = collection(db, "nodes");
+        const nodesCollection = query(collection(db, "nodes"), orderBy("idx", "asc"));
         const nodesSnapshot = await getDocs(nodesCollection);
         const data: any = [];
         nodesSnapshot.forEach(doc => {

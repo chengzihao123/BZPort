@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, orderBy, query } from 'firebase/firestore';
 import { M_TO_KM, S_TO_H } from '../constants/BackendConstants';
 import { db } from '../firebase-config';
 import MapNode, { Edge } from '../types/MapNodeType';
@@ -160,7 +160,7 @@ export async function writeCarEdgesForEachPort(): Promise<void> {
   export async function writeCarEdgesForSpecifiedPort(i): Promise<void> { 
     var Nodes;
     try {
-        const nodesCollection = collection(db, "nodes");
+        const nodesCollection =  query(collection(db, "nodes"), orderBy("idx", "asc"));
         const nodesSnapshot = await getDocs(nodesCollection);
         const data: any = [];
         nodesSnapshot.forEach(doc => {

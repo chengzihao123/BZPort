@@ -12,7 +12,11 @@ export class Graph {
         this.nodes = nodes;
     }
 
-    dijkstra(startId: number, endId: number, tonnage: number): { path: Edge[], totalDistance: number, totalDuration: number, totalCO2: number } | null {
+    dijkstra(startId: string, endId: string, tonnage: number): { path: Edge[], totalDistance: number, totalDuration: number, totalCO2: number } | null {
+        console.log("Dijkstra's algorithm starting from node", startId, "to node", endId);
+        console.log(startId)
+        console.log(endId)
+        
         let distances: { [key: number]: number } = {};  // Store the shortest distance from start to each node
         let previousEdges: { [key: number]: Edge | null } = {};  // Store the edge leading to each node
         let previousNodes: { [key: number]: number | null } = {};  // Store the previous node leading to the current one
@@ -20,7 +24,8 @@ export class Graph {
         let priorityQueue: { idx: number, emissions: number }[] = [];  // Priority queue to explore nodes
         let totalCO2Emissions: { [key: number]: number } = {};  // Store CO2 emissions from start to each node
         let totalDurations: { [key: number]: number } = {};  // Store the total duration to each node
-
+        console.log("This is my nodes!!")
+        console.log(this.nodes)
         // Initialize distances and previous arrays
         this.nodes.forEach(node => {
             distances[node.idx] = Infinity;
@@ -29,11 +34,14 @@ export class Graph {
             totalCO2Emissions[node.idx] = Infinity;
             totalDurations[node.idx] = Infinity;
         });
+        
 
-        distances[startId] = 0;
-        totalCO2Emissions[startId] = 0;
-        totalDurations[startId] = 0;
-        priorityQueue.push({ idx: startId, emissions: 0 });
+        const startIdx = this.nodes.find(n => n.id === startId)!.idx
+        const endIdx = this.nodes.find(n => n.id === endId)!.idx
+        distances[startIdx] = 0;
+        totalCO2Emissions[startIdx] = 0;
+        totalDurations[startIdx] = 0;
+        priorityQueue.push({ idx: startIdx, emissions: 0 });
 
         // Helper function to calculate CO2 emissions for an edge
         const calculateCO2Emissions = (edge: Edge, tonnage: number, type: string): number => {
@@ -90,24 +98,24 @@ export class Graph {
             processEdges(currentMapNode.carEdges, currentNode.idx, "car");
         }
 
-        if (totalCO2Emissions[endId] === Infinity) return null;
+        if (totalCO2Emissions[endIdx] === Infinity) return null;
 
         // Backtrack to find the path
         let path: Edge[] = [];
-        let currentId = endId;
-        while (currentId !== startId) {
-            let edge = previousEdges[currentId];
+        let currentIdx = endIdx;
+        while (currentIdx !== startIdx) {
+            let edge = previousEdges[currentIdx];
             if (!edge) return null;
             path.unshift(edge);  // Add edge to the path
-            currentId = previousNodes[currentId]!;  // Move to the previous node
+            currentIdx = previousNodes[currentIdx]!;  // Move to the previous node
         }
 
         
         return {
             path,
-            totalDistance: distances[endId],
-            totalDuration: totalDurations[endId],
-            totalCO2: totalCO2Emissions[endId]
+            totalDistance: distances[endIdx],
+            totalDuration: totalDurations[endIdx],
+            totalCO2: totalCO2Emissions[endIdx]
         };
     }
 
@@ -340,17 +348,17 @@ const nodes: MapNode[] = [
 // });
 const graph = new Graph(nodes);
 
-for (let i = 1; i < 6; i++) {
-    // if (i === 6) continue;  // Skip Tokyo (unreachable)
-    const result = graph.dijkstra(i,1, 1000);
-    if (result) {
-        console.log("Path found:", result.path);
-        console.log("Total CO2 emissions:", result.totalCO2);
-        console.log("Total duration:", result.totalDuration);
-        console.log("Total distance:", result.totalDistance);
-    } else {
-        console.log("No path found.");
-    }
+// for (let i = 1; i < 6; i++) {
+//     // if (i === 6) continue;  // Skip Tokyo (unreachable)
+//     const result = graph.dijkstra(i,1, 1000);
+//     if (result) {
+//         console.log("Path found:", result.path);
+//         console.log("Total CO2 emissions:", result.totalCO2);
+//         console.log("Total duration:", result.totalDuration);
+//         console.log("Total distance:", result.totalDistance);
+//     } else {
+//         console.log("No path found.");
+//     }
 
-}
+// }
 

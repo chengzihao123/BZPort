@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Graph } from '../utils/Graph.ts';
 
 export const useRecommendedPath = (nodes) => {
-    const [graph] = useState(() => new Graph(nodes));
+    console.log("invoking useRecommendedPath", nodes);
+
 
     const handleRecommendedPath = (sourceId, destinationId) => {
-        const result = graph.dijkstra(sourceId, destinationId);
+        const graph = new Graph(nodes);
+        const result = graph.dijkstra(sourceId, destinationId, 1000);
 
         if (result) {
             return {

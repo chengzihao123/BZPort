@@ -21,6 +21,10 @@ const RecommendedPathButton = ({
         setError(null);
 
         try {
+            console.log("Calculating recommended path...");
+            console.log(nodes)
+            console.log("passed source id", selectedSourceId)
+            console.log("passed destination id", selectedDestinationId) 
             const result = handleRecommendedPath(selectedSourceId, selectedDestinationId);
 
             if (result && result.path.length > 0) {
