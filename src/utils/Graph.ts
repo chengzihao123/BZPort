@@ -102,6 +102,7 @@ export class Graph {
             currentId = previousNodes[currentId]!;  // Move to the previous node
         }
 
+        
         return {
             path,
             totalDistance: distances[endId],
