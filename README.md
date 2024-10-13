@@ -1,70 +1,105 @@
-# Getting Started with Create React App
+# BZPort
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![logo](./src/images/logo2.png)
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+- [Project Overview](#project-overview)
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running the Application](#running-the-application)
+- [Usage](#usage)
+- [Contact](#contact)
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Project Overview
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+> Our project aims to optimize the global transportation and shipment of goods by leveraging PSA's node-to-network effect. By integrating data from various PSA locations, we seek to minimize both financial costs and environmental impacts, such as carbon footprint, while maximizing the efficiency of logistics operations. Through advanced analysis of routes and transportation modes, the project will provide data-driven solutions to improve decision-making and reduce the overall environmental and economic burdens of global trade.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Tech Stack
 
-### `npm run build`
+- **Frontend**: React.js
+- **Backend**: Firebase
+- **Mapping**: React Leaflet
+- **Others**: SeaRoute-js
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Features
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+List the main features of your project. For example:
 
-### `npm run eject`
+- Real-time data updates with Firebase.
+- Map visualization of routes using Leaflet.
+- Map visualization of nodes of different types e.g. ports and airports.
+- Interactive dropdown menus for selecting source and destination.
+- Distance, duration and carbon footprint calculations for the best route.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Getting Started
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Prerequisites
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Before you begin, ensure you have the following installed on your system:
 
-## Learn More
+- Node.js (>= 14.x)
+- npm (or yarn)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Installation
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. **Clone the repository:**
 
-### Code Splitting
+   ```bash
+   git clone https://github.com/chengzihao123/BZPort.git
+   cd your-repo
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+2. **Install dependencies:**
+   ```
+   npm install
+   ```
+   or with yarn:
+   ```
+   yarn install
+   ```
 
-### Analyzing the Bundle Size
+### Running the Application
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. Start the development server:
+   ```
+   npm start
+   ```
+   or with yarn:
+   ```
+   yarn start
+   ```
+2. Open your browser and navigate to `http://localhost:3000` to view the app.
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Usage
 
-### Advanced Configuration
+Here's how to use the application:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+1. **Select Source and Destination:** Use the dropdown menus to select the source and destination nodes (ports or airports).
 
-### Deployment
+2. **Visualize Best Route:** The map will automatically update to show the best route between the selected nodes based on distance, duration, and carbon footprint.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+3. **Interact with the Map:** The map allows zooming and clicking on nodes for more details.
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Contact
+
+If you have any questions, feel free to contact our team:
+
+- Chen Feng: [github](https://github.com/Feng1231)
+- Toh Yi Fan [github](https://github.com/TY1Fan)
+- Cheng Zi Hao [github](https://github.com/chengzihao123)

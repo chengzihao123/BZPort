@@ -1,0 +1,84 @@
+.App {
+  text-align: center;
+  height: 100vh; /* Ensure the App container fills the full viewport height */
+  display: flex;
+  flex-direction: column;
+}
+
+.App-header {
+  background-color: #282c34;
+  height: 12.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  color: white;
+}
+
+.product-name {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.header-image {
+  flex-grow: 1;
+  height: 100%;
+  background-image: url('../images/port.jpg');
+  background-position: top;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.dropdown-container {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.dropdown {
+  margin: 10px;
+}
+
+select {
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.recommend-button {
+  background-color: #61dafb;
+  border: none;
+  padding: 10px 10px;
+  font-size: 1.2em;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 15px;
+}
+
+.recommend-button:hover {
+  background-color: #21a1f1;
+}
+
+.map-container {
+  flex-grow: 1;
+  padding: 0;
+  height: calc(100vh - 13vh - 50px);
+  width: 100%;
+}
+
+.controls-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.map {
+  height: 100%;
+  width: 100%;
+}
