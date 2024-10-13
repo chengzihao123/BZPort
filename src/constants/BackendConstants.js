@@ -33,7 +33,7 @@ https://chatgpt.com/share/670a7269-abc4-8008-acb6-3a2f6ecb512f
 */
 
 const CARGO_AIRCRAFT_TONNAGE_CAPACITY = 102;
-
+const CARGO_AIRCRAFT_SPEED_KM_PER_H = 905;
 
 /*
 calculated using the following website
@@ -43,3 +43,9 @@ https://www.carboncare.org/en/co2-emissions-calculator
 const CARGO_TRUCK_CO2_EMISSIONS_KG_PER_KM_PER_TON =  0.21813
 const CARGO_SHIP_CO2_EMISSIONS_KG_PER_KM_PER_TON = 0.0095259
 const CARGO_AIRCRAFT_CO2_EMISSIONS_KG_PER_KM_PER_TON = 0.44908
+
+const MS_TO_S = 1/ 1000;
+const S_TO_H = 1/3600;
+const H_TO_DAY = 1/24;
+
+const M_TO_KM = 1 / 1000;
